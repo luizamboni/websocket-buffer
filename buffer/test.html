@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Teste de WebSockets</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+    </head>
+    <body>
+        <h1>Teste de WebSockets</h1>
+        <div id="insert">
+        	<h2>Inserts</h2>
+	        <div id="insert-container"></div>
+	        <input type="text" id="insert-message" name="message" />
+	        <button type="button" onclick="insert()">Insert</button>
+        </div>
+        <div id="read">
+        	<h2>Reads</h2>
+	        <div id="read-container"></div>
+	        <input type="text" id="read-message" name="message" />
+	        <button type="button" onclick="read()">Read</button>
+        </div>
+                <script>
+            var wsClient = new WebSocket("ws://localhost:8080/");
+
+            wsClient.onmessage = function(evt) {
+                var p = document.createElement("p");
+                p.setAttribute("class", "server");
+                p.innerHTML = "Server: " + evt.data;
+                var container = document.getElementById("insert-container");
+                container.appendChild(p);
+            }
+            
+            
+            wsClient.onmessage = function(evt) {
+                var p = document.createElement("p");
+                p.setAttribute("class", "server");
+                p.innerHTML = "Server: " + evt.data;
+                var container = document.getElementById("read-container");
+                container.appendChild(p);
+            }  
+            
+            function generate_random(){
+            	
+                return Math.floor((Math.random() * 100) + 1);
+            	
+            }
+            
+            function insert() {
+                var input = document.getElementById("insert-message");
+                wsClient.send(input.value);
+                genProductorMessage();
+            }
+            
+            function read(){
+                var input = document.getElementById("read-message");
+                wsClient.send(input.value);
+                genConsumerMessage();
+            	
+            }
+            
+            function genProductorMessage(){
+                var input = document.getElementById("insert-message");
+                input.value = "insert:Produtor:" + generate_random() + ":" + generate_random();
+            }
+            
+            function genConsumerMessage(){
+                var input = document.getElementById("read-message");
+                input.value = "read:Consumidor:" + generate_random();
+            }
+            
+            genConsumerMessage();
+            genProductorMessage();
+        </script>
+    </body>
+</html>
