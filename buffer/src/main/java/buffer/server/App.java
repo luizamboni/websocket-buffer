@@ -3,10 +3,7 @@ package buffer.server;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Initial Thread
- *
- */
+
 public class App 
 {
 	static Integer size; 
