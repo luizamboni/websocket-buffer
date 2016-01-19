@@ -1,7 +1,7 @@
 Desafio Buffer
 ===
 
-Teremos 3 aplica��es: Produtor, Consumidor e Buffer. 
+Teremos 3 aplicações: Produtor, Consumidor e Buffer. 
 
 Cada uma delas rodando em m�quinas distintas. 
 
@@ -31,6 +31,6 @@ inicializados.
 	- Cada Consumidor (ou seja, cada Thread) será denominado Consumidor1, Consumidor2, etc... 
 	- A partir do momento que um Consumidor tenta retirar um valor do Buffer, ele começa a contar o tempo. 
 	E quando ele consegue, ele mostra na tela, o valor que ele retirou e quanto tempo levou até conseguir retirar o valor do Buffer, com a mensagem 
-	"Retirado o valor x do Buffer pelo Consumidor y", onde x é o valor e y o n�o do Consumidor. 
+	"Retirado o valor x do Buffer pelo Consumidor y", onde x é o valor e y o não do Consumidor. 
 	
 	
