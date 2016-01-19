@@ -32,9 +32,16 @@ public class App
 		
 	}	
 	
+	public static void  setOptions(String[] opts){ 
+    	options = Arrays.asList(opts);
+
+	}
+
+
+    
     public static void main( String[] args )
     {
-    	options = Arrays.asList(args);
+    	setOptions(args);
     	
         // get number of Threads 
 	 	threads = getIntegerOption("-t");

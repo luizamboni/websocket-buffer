@@ -16,7 +16,7 @@ import junit.framework.TestSuite;
 
 public class BufferEndPointTest extends TestCase {
 
-	public void testOnMessageInsert() throws IOException, DeploymentException{
+	public void testOnMessageInsert() throws IOException{
 		Buffer buffer = new Buffer(2);
 		BufferEndpoint bep = new BufferEndpoint();
 
@@ -29,7 +29,7 @@ public class BufferEndPointTest extends TestCase {
 
 	}
 	
-	public void testOnMessageRead() throws IOException, DeploymentException{
+	public void testOnMessageRead() throws IOException{
 		Buffer buffer = new Buffer(1);
 		BufferEndpoint bep = new BufferEndpoint();
 		bep.onMessage("insert:Productor:1:5",  null);

@@ -7,32 +7,28 @@ import junit.framework.TestSuite;
 /**
  * Unit test for simple App.
  */
-public class AppTest 
-    extends TestCase
-{
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
+public class AppTest extends TestCase {
+
     public AppTest( String testName )
     {
         super( testName );
     }
 
-    /**
-     * @return the suite of tests being tested
-     */
+
     public static Test suite()
     {
         return new TestSuite( AppTest.class );
     }
 
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
+    public void testAppParams()
     {
-        assertTrue( true );
+    	String[] args = {"-p","8080", "-t", "3","-h","localhost"} ; 
+    	App.setOptions(args);
+
+    	
+    	assertTrue("options", App.getIntegerOption("-p") ==  8080);
+    	assertTrue("options", App.getIntegerOption("-t") ==  3);
+    	assertTrue("options", App.getStringOption("-h") ==  "localhost");
+
     }
 }

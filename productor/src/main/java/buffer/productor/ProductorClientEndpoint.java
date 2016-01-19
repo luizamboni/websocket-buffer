@@ -16,24 +16,28 @@ public class ProductorClientEndpoint {
 	private Integer value;
 	private long startTime;
 	private long endTime;
-
+    private String response;
 	
+    public String getResponse(){
+    	return response;
+    }
+    
 	public void setMessage(Integer threadId, Integer value){
 		
 		this.value = value;
 		this.threadId = threadId;
 	}
 
+	public String sentMessage(){
+		return "insert:Product:" + String.valueOf(threadId) + ":" + String.valueOf(value);
+	}
 	
 	@OnOpen
 	public void sendMessage(Session session) {
 		
 		try {
 			startTime = System.currentTimeMillis();
-
-
-
-			session.getBasicRemote().sendText("insert:Product:" + String.valueOf(threadId) + ":" + String.valueOf(value));
+			session.getBasicRemote().sendText( sentMessage() );
 
 	    } catch (IOException e) {
 	    	e.printStackTrace();
@@ -44,7 +48,8 @@ public class ProductorClientEndpoint {
 	public void getMessage(String text){
 		endTime = System.currentTimeMillis();
 		long difference = endTime - startTime;
-		System.out.println(text + " in " + String.valueOf(difference /1000.00) + " seconds" );
+		response = text + " in " + String.valueOf(difference /1000.00) + " seconds";
+		System.out.println(response);
 
 		
 	}

@@ -45,7 +45,6 @@ public class BufferEndpoint {
     	 *		read:Consummer:5
     	 */
     	
-    	String outPut = "";
     	String command = message.split(":" )[0];
     	String type = message.split(":" )[1];	
     	String thread_id = message.split(":" )[2];	
@@ -73,36 +72,36 @@ public class BufferEndpoint {
 		    }
 	    		    	
 	    	if(command.equals("insert")){
-	    		outPut =   "Valor "+ value.toString() + " " + humanizedAction + " em Buffer pelo "+ type + " " +  thread_id;
+	    		response =   "Valor "+ value.toString() + " " + humanizedAction + " em Buffer pelo "+ type + " " +  thread_id;
 	    		
 	    	}else if(command.equals("read")){
-	    		outPut =   "Valor "+ value.toString() + " " + humanizedAction + " em Buffer pelo "+ type + " " +  thread_id;
+	    		response =   "Valor "+ value.toString() + " " + humanizedAction + " em Buffer pelo "+ type + " " +  thread_id;
 
 	    	}else{
-	    		outPut =  "nenhuma operação identificada";
+	    		response =  "nenhuma operação identificada";
 	    	} 	
     	
     	
-    	if(session != null && outPut != "nenhuma operação identificada"){
+    	if(session != null && response != "nenhuma operação identificada"){
 
-    		session.getBasicRemote().sendText(outPut);
+    		session.getBasicRemote().sendText(response);
     	}
     	}catch(BufferOverflowException e){
     		
-    		outPut =  "Productor " + thread_id  + " tentou colocar item no Buffer cheio";
+    		response =  "Productor " + thread_id  + " tentou colocar item no Buffer cheio";
     	}catch(BufferUnderflowException e){
-    		outPut =  "Consumidor " + thread_id + " tentou retirar item do Buffer vazio";
+    		response =  "Consumidor " + thread_id + " tentou retirar item do Buffer vazio";
     		
     	}catch(InterruptedException e){
 
-    		outPut =  type +  " " + thread_id +" falhou";
+    		response =  type +  " " + thread_id +" falhou";
     	}finally{
     		
 	    	mutex.release();
 
     	}
     	
-        System.out.println( outPut);
+        System.out.println( response);
         
         if(session != null){
 	        try {
@@ -111,9 +110,7 @@ public class BufferEndpoint {
 				e.printStackTrace();
 			}
         }
-        
-    	response =  outPut;
-    	
+            	
     }
     
     @OnClose
