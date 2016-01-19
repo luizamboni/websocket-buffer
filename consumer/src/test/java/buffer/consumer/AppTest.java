@@ -22,8 +22,15 @@ public class AppTest
     }
 
  
-    public void testApp()
+    public void testAppParams()
     {
-        assertTrue( true );
+    	String[] args = {"-p","8080", "-t", "3", "-h","localhost"} ; 
+    	App.setOptions(args);
+
+    	
+    	assertTrue("options", App.getIntegerOption("-p") ==  8080);
+    	assertTrue("options", App.getIntegerOption("-t") ==  3);
+    	assertTrue("options", App.getStringOption("-h") ==  "localhost");
+
     }
 }

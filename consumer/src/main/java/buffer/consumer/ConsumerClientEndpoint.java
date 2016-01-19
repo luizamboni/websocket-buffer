@@ -13,11 +13,21 @@ public class ConsumerClientEndpoint {
 	private Integer threadId;
 	private long startTime;
 	private long endTime;
+	private String response;
+	
+	public String getResponse(){
+		return response;
+	}
+	
 	
 	public ConsumerClientEndpoint(Integer threadId){
 		this.threadId = threadId;
 	}
 
+	
+	public String sentMessage(){
+		return "read:Consumer:" + String.valueOf(threadId);
+	}
 	
 	@OnOpen
 	public void sendMessage(Session session) {
@@ -25,7 +35,7 @@ public class ConsumerClientEndpoint {
 		try {
 			startTime = System.currentTimeMillis();
 
-			session.getBasicRemote().sendText("read:Consumer:" + String.valueOf(threadId));
+			session.getBasicRemote().sendText( sentMessage() );
 	    } catch (IOException e) {
 	    	e.printStackTrace();
 	    }
@@ -35,7 +45,8 @@ public class ConsumerClientEndpoint {
 	public void getMessage(String text){
 		endTime = System.currentTimeMillis();
 		long difference = endTime - startTime;
-		System.out.println(text + " in " + String.valueOf(difference /1000.00) + " seconds" );
+		response =  text + " in " + String.valueOf(difference /1000.00) + " seconds";
+		System.out.println(response );
 
 		
 	}
