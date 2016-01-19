@@ -8,7 +8,7 @@ public class App
 {
 	static Integer size; 
 	static Integer port;
-	static List<String> options;
+	static public List<String> options;
 	
 	public static String getStringOption(String option){
 		Integer index = options.indexOf(option);
@@ -30,10 +30,18 @@ public class App
 			return null;
 		}
 		
-	}			
+	}	
+	
+	public static void  setOptions(String[] opts){ 
+    	options = Arrays.asList(opts);
+
+	}
+
 	
     public static void main( String[] args )
     {
+    	
+    	setOptions(args);
     	
     	options = Arrays.asList(args);
 
@@ -46,9 +54,13 @@ public class App
     	// deixo aqui para ver se está rodando
          System.out.println( "initialized" );
         
-         BufferServer server = new BufferServer(port, size);
-         server.start();
-     
+
+         Init();
+    }
+    
+    public static void Init(){
+        BufferServer server = new BufferServer(port, size);
+        server.start();
     }
     
 }

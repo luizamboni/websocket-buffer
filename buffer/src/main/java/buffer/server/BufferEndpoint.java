@@ -13,7 +13,12 @@ public class BufferEndpoint {
 
 	private Buffer Buffer;
     static Semaphore mutex;
-
+    private String response;
+    
+    public String getResponse(){
+    	return response;
+    }
+    
 	public BufferEndpoint(){
 		this.Buffer =  Buffer.getInstance();
 		this.mutex =  new Semaphore(1);
@@ -53,6 +58,7 @@ public class BufferEndpoint {
         	mutex.acquire();
         	
 	    	if(command.equals("insert")){ 
+	    		
 	        	value = Integer.valueOf( message.split(":" )[3] );	
 	            humanizedAction = "adicionado";
 	            Buffer.insert( value);
@@ -66,19 +72,21 @@ public class BufferEndpoint {
 		    	value = null;
 		    }
 	    		    	
-	    	
 	    	if(command.equals("insert")){
 	    		outPut =   "Valor "+ value.toString() + " " + humanizedAction + " em Buffer pelo "+ type + " " +  thread_id;
-	    		session.getBasicRemote().sendText(outPut);
 	    		
 	    	}else if(command.equals("read")){
 	    		outPut =   "Valor "+ value.toString() + " " + humanizedAction + " em Buffer pelo "+ type + " " +  thread_id;
-	    		session.getBasicRemote().sendText(outPut);
 
 	    	}else{
 	    		outPut =  "nenhuma operação identificada";
 	    	} 	
-	    	
+    	
+    	
+    	if(session != null && outPut != "nenhuma operação identificada"){
+
+    		session.getBasicRemote().sendText(outPut);
+    	}
     	}catch(BufferOverflowException e){
     		
     		outPut =  "Productor " + thread_id  + " tentou colocar item no Buffer cheio";
@@ -96,13 +104,15 @@ public class BufferEndpoint {
     	
         System.out.println( outPut);
         
-        try {
-			session.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-//    	return outPut;
-
+        if(session != null){
+	        try {
+				session.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+        }
+        
+    	response =  outPut;
     	
     }
     
