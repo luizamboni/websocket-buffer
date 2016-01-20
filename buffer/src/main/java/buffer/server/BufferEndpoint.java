@@ -11,6 +11,7 @@ import javax.websocket.server.*;
 @ServerEndpoint(value = "/")
 public class BufferEndpoint { 
 
+	
 	private Buffer buffer;
     static Semaphore mutex;
     private String response;
@@ -61,12 +62,12 @@ public class BufferEndpoint {
 	        	value = Integer.valueOf( message.split(":" )[3] );	
 	            
 	            buffer.insert( value);
-	    		response =   "Valor "+ value.toString() + " adicionado em Buffer pelo "+ type + " " +  thread_id;
+	    		response =   Colors.ANSI_GREEN + "Valor "+ value.toString() + " adicionado em Buffer pelo "+ type + " " +  thread_id + Colors.ANSI_RESET;
 	    		sendMessage(session,response);
 		    }else if(command.equals("read")){
 
 		    	value  = buffer.read();
-	    		response =   "Valor "+ value.toString() + " retirado em Buffer pelo "+ type + " " +  thread_id;
+	    		response =   Colors.ANSI_GREEN + "Valor "+ value.toString() + " retirado em Buffer pelo "+ type + " " +  thread_id + Colors.ANSI_RESET;
 	    		sendMessage(session, response);
 		    }
 	    		    	   	
@@ -74,13 +75,13 @@ public class BufferEndpoint {
     	
     	}catch(BufferOverflowException e){
     		
-    		response =  "Productor " + thread_id  + " tentou colocar item no Buffer cheio";
+    		response =  Colors.ANSI_RED + "Productor " + thread_id  + " tentou colocar item no Buffer cheio" + Colors.ANSI_RESET;
     	}catch(BufferUnderflowException e){
-    		response =  "Consumidor " + thread_id + " tentou retirar item do Buffer vazio";
+    		response =  Colors.ANSI_RED + "Consumidor " + thread_id + " tentou retirar item do Buffer vazio" + Colors.ANSI_RESET;
     		
     	}catch(InterruptedException e){
 
-    		response =  type +  " " + thread_id + " falhou";
+    		response =  Colors.ANSI_RED + type +  " " + thread_id + " falhou" + Colors.ANSI_RESET;
     	}catch(IOException e){
     		response = e.getMessage();
     	}finally{
@@ -91,6 +92,7 @@ public class BufferEndpoint {
     	
         System.out.println( response);
         
+        // in unit test session is null
         if(session != null){
 	        try {
 				session.close();
@@ -101,6 +103,7 @@ public class BufferEndpoint {
             	
     }
     
+    // in unit test session is null
     public void sendMessage(Session session,String message) throws IOException{
         if(session != null){
     		session.getBasicRemote().sendText(message) ;
