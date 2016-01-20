@@ -15,7 +15,7 @@ public class ConsumerClientEndpointTest extends TestCase{
 	
 	public void testSentMessage(){
 		ConsumerClientEndpoint clientEndpoint = new ConsumerClientEndpoint(1);
-		assertEquals(clientEndpoint.sentMessage(), "read:Consumer:1");
+		assertEquals(clientEndpoint.sentMessage(), "Consumer:1:read");
 
 	}
 

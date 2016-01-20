@@ -20,11 +20,11 @@ public class BufferEndPointTest extends TestCase {
 		Buffer buffer = new Buffer(2);
 		BufferEndpoint bep = new BufferEndpoint();
 
-		bep.onMessage("insert:Productor:1:5",  null);
+		bep.onMessage("Productor:1:insert:5",  null);
 		assertEquals("Valor 5 adicionado em Buffer pelo Productor 1", bep.getResponse());
-		bep.onMessage("insert:Productor:3:5",  null);
+		bep.onMessage("Productor:3:insert:5",  null);
 		assertEquals("Valor 5 adicionado em Buffer pelo Productor 3", bep.getResponse());
-		bep.onMessage("insert:Productor:3:5",  null);
+		bep.onMessage("Productor:3:insert:5",  null);
 		assertEquals("Productor 3 tentou colocar item no Buffer cheio", bep.getResponse());
 
 	}
@@ -32,10 +32,10 @@ public class BufferEndPointTest extends TestCase {
 	public void testOnMessageRead() throws IOException{
 		Buffer buffer = new Buffer(1);
 		BufferEndpoint bep = new BufferEndpoint();
-		bep.onMessage("insert:Productor:1:5",  null);
-		bep.onMessage("read:Consumer:1",  null);
+		bep.onMessage("Productor:1:insert:5",  null);
+		bep.onMessage("Consumer:1:read",  null);
 		assertEquals("Valor 5 retirado em Buffer pelo Consumer 1", bep.getResponse());
-		bep.onMessage("read:Consumer:1",  null);
+		bep.onMessage("Consumer:1:read",  null);
 		assertEquals("Consumidor 1 tentou retirar item do Buffer vazio", bep.getResponse());
 
 		

@@ -29,7 +29,7 @@ public class ProductorClientEndpoint {
 	}
 
 	public String sentMessage(){
-		return "insert:Product:" + String.valueOf(threadId) + ":" + String.valueOf(value);
+		return "Productor:" + String.valueOf(threadId) + ":insert:" + String.valueOf(value);
 	}
 	
 	@OnOpen
@@ -46,6 +46,7 @@ public class ProductorClientEndpoint {
 	
 	@OnMessage
 	public void getMessage(String text){
+		response = null;
 		endTime = System.currentTimeMillis();
 		long difference = endTime - startTime;
 		response = text + " in " + String.valueOf(difference /1000.00) + " seconds";

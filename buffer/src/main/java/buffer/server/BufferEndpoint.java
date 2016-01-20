@@ -11,7 +11,7 @@ import javax.websocket.server.*;
 @ServerEndpoint(value = "/")
 public class BufferEndpoint { 
 
-	private Buffer Buffer;
+	private Buffer buffer;
     static Semaphore mutex;
     private String response;
     
@@ -20,7 +20,7 @@ public class BufferEndpoint {
     }
     
 	public BufferEndpoint(){
-		this.Buffer =  Buffer.getInstance();
+		this.buffer =  Buffer.getInstance();
 		this.mutex =  new Semaphore(1);
 	}
 	
@@ -33,25 +33,25 @@ public class BufferEndpoint {
     @OnMessage
     public void onMessage(String message,Session session) throws IOException {
     	
+    	response = null;
 
 
-        /* formato de mensagem insert comand:type:id:value
+        /* formato de mensagem insert comand:id:type:value
          * poderia sem num json também, mas no caso presente nâo vi 
          * necessidade e preferi uma sintaxa proxima as chaves do Redis
          * 
     	 *	Exemplos
     	 *  
-    	 * 		insert:Productor:5:40
-    	 *		read:Consummer:5
+    	 * 		Productor:5:insert:40
+    	 *		Consumer:5:read
     	 */
     	
-    	String command = message.split(":" )[0];
-    	String type = message.split(":" )[1];	
-    	String thread_id = message.split(":" )[2];	
+    	String command = message.split(":" )[2];
+    	String type = message.split(":" )[0];	
+    	String thread_id = message.split(":" )[1];	
     	Integer value;
     	
     	
-    	String humanizedAction;
     	try{
     		
         	mutex.acquire();
@@ -59,33 +59,19 @@ public class BufferEndpoint {
 	    	if(command.equals("insert")){ 
 	    		
 	        	value = Integer.valueOf( message.split(":" )[3] );	
-	            humanizedAction = "adicionado";
-	            Buffer.insert( value);
+	            
+	            buffer.insert( value);
+	    		response =   "Valor "+ value.toString() + " adicionado em Buffer pelo "+ type + " " +  thread_id;
+	    		sendMessage(session,response);
 		    }else if(command.equals("read")){
-		    	humanizedAction = "retirado";
-		    	value  = Buffer.read();
-		    	
-		    }else{
-		    	// TODO tratar como erro
-		    	humanizedAction = "";
-		    	value = null;
+
+		    	value  = buffer.read();
+	    		response =   "Valor "+ value.toString() + " retirado em Buffer pelo "+ type + " " +  thread_id;
+	    		sendMessage(session, response);
 		    }
-	    		    	
-	    	if(command.equals("insert")){
-	    		response =   "Valor "+ value.toString() + " " + humanizedAction + " em Buffer pelo "+ type + " " +  thread_id;
-	    		
-	    	}else if(command.equals("read")){
-	    		response =   "Valor "+ value.toString() + " " + humanizedAction + " em Buffer pelo "+ type + " " +  thread_id;
-
-	    	}else{
-	    		response =  "nenhuma operação identificada";
-	    	} 	
+	    		    	   	
+    
     	
-    	
-    	if(session != null && response != "nenhuma operação identificada"){
-
-    		session.getBasicRemote().sendText(response);
-    	}
     	}catch(BufferOverflowException e){
     		
     		response =  "Productor " + thread_id  + " tentou colocar item no Buffer cheio";
@@ -94,7 +80,9 @@ public class BufferEndpoint {
     		
     	}catch(InterruptedException e){
 
-    		response =  type +  " " + thread_id +" falhou";
+    		response =  type +  " " + thread_id + " falhou";
+    	}catch(IOException e){
+    		response = e.getMessage();
     	}finally{
     		
 	    	mutex.release();
@@ -112,6 +100,14 @@ public class BufferEndpoint {
         }
             	
     }
+    
+    public void sendMessage(Session session,String message) throws IOException{
+        if(session != null){
+    		session.getBasicRemote().sendText(message) ;
+
+        }
+    }
+    
     
     @OnClose
     public void onClose(Session session) {

@@ -17,7 +17,7 @@ public class ProductorClientEndpointTest extends TestCase{
 	public void testSetMessage(){
 		ProductorClientEndpoint clientEndpoint = new ProductorClientEndpoint();
 		clientEndpoint.setMessage(2, 4);
-		assertEquals(clientEndpoint.sentMessage(),"insert:Product:2:4");
+		assertEquals(clientEndpoint.sentMessage(),"Productor:2:insert:4");
 
 	}
 

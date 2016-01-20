@@ -2,14 +2,9 @@ package buffer.consumer;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Random;
 
-import javax.websocket.ClientEndpoint;
 import javax.websocket.ContainerProvider;
 import javax.websocket.DeploymentException;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
 import javax.websocket.WebSocketContainer;
 
 public class ConsumerWsClient implements Runnable {
@@ -24,6 +19,10 @@ public class ConsumerWsClient implements Runnable {
 		this.port = port;
 	}
 	
+	public String getName(){
+		return "Consumidor " +  threadId;
+		
+	}
 	
 	public void run(){
 		try{
@@ -42,7 +41,7 @@ public class ConsumerWsClient implements Runnable {
 			e.printStackTrace();
 		}
 	    
-        System.out.println( "Consumidor " +  threadId );
+        System.out.println( getName() );
 	}
 }
 	

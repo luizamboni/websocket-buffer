@@ -26,7 +26,7 @@ public class ConsumerClientEndpoint {
 
 	
 	public String sentMessage(){
-		return "read:Consumer:" + String.valueOf(threadId);
+		return "Consumer:" + String.valueOf(threadId) + ":read" ;
 	}
 	
 	@OnOpen
@@ -43,6 +43,7 @@ public class ConsumerClientEndpoint {
 	
 	@OnMessage
 	public void getMessage(String text){
+		response = null;
 		endTime = System.currentTimeMillis();
 		long difference = endTime - startTime;
 		response =  text + " in " + String.valueOf(difference /1000.00) + " seconds";

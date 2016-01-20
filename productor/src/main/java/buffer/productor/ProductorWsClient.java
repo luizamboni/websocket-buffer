@@ -32,7 +32,12 @@ public class ProductorWsClient implements Runnable {
 	    return randomNum;
 	}
 	
+	public String getName(){
+		return  "Produtor " +  threadId;
+	}
+	
 	public void run(){
+
 		try{
 			WebSocketContainer container = ContainerProvider.getWebSocketContainer();
    
@@ -50,7 +55,7 @@ public class ProductorWsClient implements Runnable {
 			e.printStackTrace();
 		}
 	    
-        System.out.println( "Produtor " +  threadId );
+        System.out.println( getName() );
 	}
 	
 
