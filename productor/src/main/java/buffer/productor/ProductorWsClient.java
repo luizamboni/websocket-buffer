@@ -3,6 +3,9 @@ package buffer.productor;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Random;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
 
 import javax.websocket.ClientEndpoint;
 import javax.websocket.ContainerProvider;
@@ -17,11 +20,13 @@ public class ProductorWsClient implements Runnable {
 	private Integer threadId;
 	private String host;
 	private Integer port;
-	
-	public ProductorWsClient(Integer threadId, String host, Integer port){
+	CountDownLatch latch;
+
+	public ProductorWsClient(Integer threadId, String host, Integer port, CountDownLatch latch){
 		this.threadId =  threadId;
 		this.host = host;
 		this.port = port;
+		this.latch =  latch;
 	}
 	
 	private int getRandom(){
@@ -39,6 +44,12 @@ public class ProductorWsClient implements Runnable {
 	public void run(){
 
 		try{
+		    try{
+                latch.await();
+            } catch (InterruptedException ex){
+                ex.printStackTrace();
+            } 
+		    
 			WebSocketContainer container = ContainerProvider.getWebSocketContainer();
    
 			String uri = "ws://"+ host + ":"+ String.valueOf(port) + "/";
