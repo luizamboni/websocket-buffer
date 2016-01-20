@@ -1,3 +1,13 @@
+Instalar
+===
+$ \. mvncompile.sh 
+
+Rodar todos os testes unitários
+===
+$ \. testall.sh 
+
+
+
 Desafio Buffer
 ===
 
