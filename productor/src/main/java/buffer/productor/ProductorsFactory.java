@@ -33,17 +33,13 @@ public class ProductorsFactory {
 		
 
 		
-		for(Thread thread : threads){
-			thread.start();
-		}
+		for(Thread thread : threads){ thread.start(); }
 		
 		new Thread()
 		{
 		    public void run() {
 				for(Thread thread : threads){
-					latch.countDown();
-//				    System.out.println("start countdown "+  latch.getCount());
-				    
+					latch.countDown();				    
 				}
 		    }
 		}.start();

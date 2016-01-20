@@ -1,5 +1,6 @@
 package buffer.consumer;
 import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
 
 public class ConsumersFactory {
 
@@ -8,6 +9,8 @@ public class ConsumersFactory {
 	private String host;
 	private Integer port;
 	private Integer quantity;
+	CountDownLatch latch;
+	CountDownLatch mainLatch;
 	
 	public ConsumersFactory(Integer quantity, String host, Integer port){
 		
@@ -15,8 +18,11 @@ public class ConsumersFactory {
 		this.host = host;
 		this.port = port;
 		this.quantity = quantity;
+		latch = new CountDownLatch(quantity);
+		mainLatch = new CountDownLatch(quantity);
+		
 		for (int i = 0; i < quantity; i++){
-			ConsumerWsClient runnable = new ConsumerWsClient(i+1, host, port);
+			ConsumerWsClient runnable = new ConsumerWsClient(i+1, host, port,latch, mainLatch);
 			this.threads.add(new Thread(runnable)) ;
 		}
 	}
@@ -24,18 +30,24 @@ public class ConsumersFactory {
 	public void run(){
 
 		
-		for(Thread thread : threads){
-			try {
-				
-				thread.start();
-				thread.join();
-
-			} catch (InterruptedException e) {
-				System.out.println( thread.getName() + " fails");
-				e.printStackTrace();
-			}
-		}
+		for(Thread thread : threads){ thread.start(); }
 		
+		new Thread()
+		{
+		    public void run() {
+				for(Thread thread : threads){
+					latch.countDown();				    
+				}
+		    }
+		}.start();
+		
+		
+		try {
+			mainLatch.await();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
 	    System.out.println("All threads have finished execution");
 
 		
