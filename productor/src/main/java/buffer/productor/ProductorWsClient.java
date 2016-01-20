@@ -21,12 +21,14 @@ public class ProductorWsClient implements Runnable {
 	private String host;
 	private Integer port;
 	CountDownLatch latch;
-
-	public ProductorWsClient(Integer threadId, String host, Integer port, CountDownLatch latch){
+	CountDownLatch mainLatch;
+	
+	public ProductorWsClient(Integer threadId, String host, Integer port, CountDownLatch latch,CountDownLatch mainLatch){
 		this.threadId =  threadId;
 		this.host = host;
 		this.port = port;
 		this.latch =  latch;
+		this.mainLatch = mainLatch;
 	}
 	
 	private int getRandom(){
@@ -54,7 +56,7 @@ public class ProductorWsClient implements Runnable {
    
 			String uri = "ws://"+ host + ":"+ String.valueOf(port) + "/";
 			
-			ProductorClientEndpoint socket = new ProductorClientEndpoint();
+			ProductorClientEndpoint socket = new ProductorClientEndpoint(mainLatch);
 			socket.setMessage(threadId, getRandom());
 			
 			container.connectToServer(socket, URI.create(uri));
@@ -65,7 +67,6 @@ public class ProductorWsClient implements Runnable {
 	    } catch (IOException e) {
 			e.printStackTrace();
 		}
-	    
         System.out.println( getName() );
 	}
 	

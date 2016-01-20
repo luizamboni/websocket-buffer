@@ -11,6 +11,7 @@ public class ProductorsFactory {
 	private Integer port;
 	private Integer quantity;
 	CountDownLatch latch;
+	CountDownLatch mainLatch;
 
 	public ProductorsFactory(Integer quantity, String host, Integer port){
 		
@@ -20,9 +21,10 @@ public class ProductorsFactory {
 		this.port = port;
 		this.quantity = quantity;
 		latch = new CountDownLatch(quantity);
+		mainLatch = new CountDownLatch(quantity);
 
 		for (int i = 0; i < quantity; i++){
-			ProductorWsClient runnable = new ProductorWsClient(i+1, host, port, latch);
+			ProductorWsClient runnable = new ProductorWsClient(i+1, host, port, latch, mainLatch);
 			this.threads.add(new Thread(runnable)) ;
 		}
 	}
@@ -33,8 +35,6 @@ public class ProductorsFactory {
 		
 		for(Thread thread : threads){
 			thread.start();
-		    //System.out.println("start thread "+  thread.getName());
-
 		}
 		
 		new Thread()
@@ -42,7 +42,7 @@ public class ProductorsFactory {
 		    public void run() {
 				for(Thread thread : threads){
 					latch.countDown();
-				    //System.out.println("start countdown "+  latch.getCount());
+//				    System.out.println("start countdown "+  latch.getCount());
 				    
 				}
 		    }
@@ -50,17 +50,11 @@ public class ProductorsFactory {
 		
 		
 		try {
-			latch.await();
+			mainLatch.await();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
 	    System.out.println("All threads have finished execution");
 
 		

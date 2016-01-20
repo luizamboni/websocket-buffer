@@ -2,8 +2,10 @@ package buffer.productor;
 
 import java.io.IOException;
 import java.util.Random;
+import java.util.concurrent.CountDownLatch;
 
 import javax.websocket.ClientEndpoint;
+import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
@@ -17,10 +19,19 @@ public class ProductorClientEndpoint {
 	private long startTime;
 	private long endTime;
     private String response;
-	
+	CountDownLatch mainLatch;
+
     public String getResponse(){
     	return response;
     }
+    
+    
+
+    public ProductorClientEndpoint(CountDownLatch mainLatch){
+    	this.mainLatch = mainLatch;
+
+    }
+
     
 	public void setMessage(Integer threadId, Integer value){
 		
@@ -42,6 +53,13 @@ public class ProductorClientEndpoint {
 	    } catch (IOException e) {
 	    	e.printStackTrace();
 	    }
+	}
+	
+	@OnClose
+	public void onClose(){
+		mainLatch.countDown();
+//		System.out.println("countdown " +mainLatch.getCount());
+
 	}
 	
 	@OnMessage
