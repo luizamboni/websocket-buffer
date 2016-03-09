@@ -20,7 +20,7 @@ public class ProductorsFactory {
 
 		this.port = port;
 		this.quantity = quantity;
-		latch = new CountDownLatch(quantity);
+		latch = new CountDownLatch(1);
 		mainLatch = new CountDownLatch(quantity);
 
 		for (int i = 0; i < quantity; i++){
@@ -35,12 +35,11 @@ public class ProductorsFactory {
 		
 		for(Thread thread : threads){ thread.start(); }
 		
+		
 		new Thread()
 		{
 		    public void run() {
-				for(Thread thread : threads){
-					latch.countDown();				    
-				}
+				latch.countDown();				    			
 		    }
 		}.start();
 		

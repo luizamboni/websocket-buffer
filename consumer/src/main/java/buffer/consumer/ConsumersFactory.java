@@ -18,7 +18,7 @@ public class ConsumersFactory {
 		this.host = host;
 		this.port = port;
 		this.quantity = quantity;
-		latch = new CountDownLatch(quantity);
+		latch = new CountDownLatch(1);
 		mainLatch = new CountDownLatch(quantity);
 		
 		for (int i = 0; i < quantity; i++){
@@ -35,9 +35,7 @@ public class ConsumersFactory {
 		new Thread()
 		{
 		    public void run() {
-				for(Thread thread : threads){
-					latch.countDown();				    
-				}
+				latch.countDown();
 		    }
 		}.start();
 		
