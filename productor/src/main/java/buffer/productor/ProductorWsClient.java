@@ -20,14 +20,14 @@ public class ProductorWsClient implements Runnable {
 	private Integer threadId;
 	private String host;
 	private Integer port;
-	CountDownLatch latch;
+	CyclicBarrier barrier;
 	CountDownLatch mainLatch;
 	
-	public ProductorWsClient(Integer threadId, String host, Integer port, CountDownLatch latch,CountDownLatch mainLatch){
+	public ProductorWsClient(Integer threadId, String host, Integer port, CyclicBarrier barrier,CountDownLatch mainLatch){
 		this.threadId =  threadId;
 		this.host = host;
 		this.port = port;
-		this.latch =  latch;
+		this.barrier =  barrier;
 		this.mainLatch = mainLatch;
 	}
 	
@@ -47,10 +47,12 @@ public class ProductorWsClient implements Runnable {
 
 		try{
 		    try{
-                latch.await();
-            } catch (InterruptedException ex){
+		    	barrier.await();
+            } catch (BrokenBarrierException ex){
                 ex.printStackTrace();
-            } 
+            } catch(InterruptedException ex){
+            	ex.printStackTrace();
+            }
 		    
 			WebSocketContainer container = ContainerProvider.getWebSocketContainer();
    

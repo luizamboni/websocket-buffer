@@ -1,6 +1,7 @@
 package buffer.consumer;
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
 
 public class ConsumersFactory {
 
@@ -9,7 +10,7 @@ public class ConsumersFactory {
 	private String host;
 	private Integer port;
 	private Integer quantity;
-	CountDownLatch latch;
+	CyclicBarrier barrier;
 	CountDownLatch mainLatch;
 	
 	public ConsumersFactory(Integer quantity, String host, Integer port){
@@ -18,11 +19,11 @@ public class ConsumersFactory {
 		this.host = host;
 		this.port = port;
 		this.quantity = quantity;
-		latch = new CountDownLatch(1);
+		barrier = new CyclicBarrier(quantity);
 		mainLatch = new CountDownLatch(quantity);
 		
 		for (int i = 0; i < quantity; i++){
-			ConsumerWsClient runnable = new ConsumerWsClient(i+1, host, port,latch, mainLatch);
+			ConsumerWsClient runnable = new ConsumerWsClient(i+1, host, port,barrier, mainLatch);
 			this.threads.add(new Thread(runnable)) ;
 		}
 	}
@@ -31,14 +32,6 @@ public class ConsumersFactory {
 
 		
 		for(Thread thread : threads){ thread.start(); }
-		
-		new Thread()
-		{
-		    public void run() {
-				latch.countDown();
-		    }
-		}.start();
-		
 		
 		try {
 			mainLatch.await();

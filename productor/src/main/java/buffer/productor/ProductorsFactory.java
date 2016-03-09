@@ -10,7 +10,7 @@ public class ProductorsFactory {
 	private String host;
 	private Integer port;
 	private Integer quantity;
-	CountDownLatch latch;
+	CyclicBarrier barrier;
 	CountDownLatch mainLatch;
 
 	public ProductorsFactory(Integer quantity, String host, Integer port){
@@ -20,11 +20,11 @@ public class ProductorsFactory {
 
 		this.port = port;
 		this.quantity = quantity;
-		latch = new CountDownLatch(1);
+		barrier = new CyclicBarrier(quantity);
 		mainLatch = new CountDownLatch(quantity);
 
 		for (int i = 0; i < quantity; i++){
-			ProductorWsClient runnable = new ProductorWsClient(i+1, host, port, latch, mainLatch);
+			ProductorWsClient runnable = new ProductorWsClient(i+1, host, port, barrier, mainLatch);
 			this.threads.add(new Thread(runnable)) ;
 		}
 	}
@@ -34,14 +34,6 @@ public class ProductorsFactory {
 
 		
 		for(Thread thread : threads){ thread.start(); }
-		
-		
-		new Thread()
-		{
-		    public void run() {
-				latch.countDown();				    			
-		    }
-		}.start();
 		
 		
 		try {
