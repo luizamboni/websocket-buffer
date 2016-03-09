@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite failures="0" time="0.041" errors="0" skipped="0" tests="1" name="buffer.productor.AppTest">
+<testsuite failures="0" time="0.042" errors="0" skipped="0" tests="1" name="buffer.productor.AppTest">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="/usr/lib/jvm/java-7-oracle/jre/lib/i386"/>
@@ -58,5 +58,5 @@
     <property name="sun.desktop" value="gnome"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase time="0.007" classname="buffer.productor.AppTest" name="testAppParams"/>
+  <testcase time="0.005" classname="buffer.productor.AppTest" name="testAppParams"/>
 </testsuite>
